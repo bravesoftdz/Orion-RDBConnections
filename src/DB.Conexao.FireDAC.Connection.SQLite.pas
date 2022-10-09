@@ -1,9 +1,9 @@
 unit DB.Conexao.FireDAC.Connection.SQLite;
 
 interface
-
 uses
   DB.Conexao.Interfaces,
+
   FireDAC.Stan.Intf,
   FireDAC.Stan.Option,
   FireDAC.Stan.Error,
@@ -33,7 +33,6 @@ uses
   FireDAC.Comp.DataSet,
   FireDAC.Comp.Client,
   System.Classes;
-
 type
   TDBConexaoSQLite = class(TInterfacedObject, iConexao)
   private
@@ -45,7 +44,6 @@ type
     constructor Create;
     destructor Destroy; override;
     class function New : iConexao;
-
     procedure Configurations(aPath, aUsername, aPassword, aServer : string; aPort : integer);
     procedure StartTransaction;
     procedure Commit;
@@ -54,19 +52,14 @@ type
     function Component : TComponent;
     function NewDataset : iDataset;
   end;
-
 implementation
-
 uses
   System.SysUtils, DB.Conexao.FireDAC.Query;
-
 { TDBConexaoSQLite }
-
 procedure TDBConexaoSQLite.Commit;
 begin
   FDBConnection.Commit;
 end;
-
 function TDBConexaoSQLite.ComplementaZeros(aValue: string): string;
 var
   nDoc: Integer;
@@ -84,12 +77,10 @@ begin
   end;
   Result := cDoc;
 end;
-
 function TDBConexaoSQLite.Component: TComponent;
 begin
   Result := FDBConnection;
 end;
-
 procedure TDBConexaoSQLite.Configurations(aPath, aUsername, aPassword, aServer: string; aPort: integer);
 begin
   FDBConnection.Params.DriverID := 'SQLite';
@@ -98,7 +89,6 @@ begin
   FDBConnection.Params.Password := aPassword;
   FDBConnection.Params.AddPair('Port', aPort.ToString);
 end;
-
 constructor TDBConexaoSQLite.Create;
 begin
   FDBConnection := TFDConnection.Create(nil);
@@ -106,7 +96,6 @@ begin
   FDriverLink := TFDPhysSQLiteDriverLink.Create(nil);
   FDBQueryControlaID := TFDQuery.Create(nil);
 end;
-
 destructor TDBConexaoSQLite.Destroy;
 begin
   if FDBConnection.InTransaction then
@@ -117,7 +106,6 @@ begin
   FDBQueryControlaID.DisposeOf;
   inherited;
 end;
-
 function TDBConexaoSQLite.NControle(aDescricao : string; aTipoCampoNControle : TTipoCampoNControle) : string;
 begin
   try
@@ -142,25 +130,20 @@ begin
     FDBQueryControlaID.Close;
   end;
 end;
-
 class function TDBConexaoSQLite.New: iConexao;
 begin
   Result := Self.Create;
 end;
-
 function TDBConexaoSQLite.NewDataset: iDataset;
 begin
   Result := TFiredacQuery.New(Self);
 end;
-
 procedure TDBConexaoSQLite.RollBack;
 begin
   FDBConnection.Rollback;
 end;
-
 procedure TDBConexaoSQLite.StartTransaction;
 begin
   FDBConnection.StartTransaction;
 end;
-
 end.
